@@ -13,7 +13,7 @@ def load_data():
 df = load_data()
 
 # Sidebar filters
-st.sidebar.header("🔍 Filter Options")
+st.sidebar.title("🔧 Filters")
 species = st.sidebar.multiselect("Species", options=df["species"].unique(), default=df["species"].unique())
 island = st.sidebar.multiselect("Island", options=df["island"].unique(), default=df["island"].unique())
 sex = st.sidebar.multiselect("Sex", options=df["sex"].dropna().unique(), default=df["sex"].dropna().unique())
@@ -24,54 +24,62 @@ filtered_df = df[
     (df["sex"].isin(sex))
 ]
 
-# Main title
-st.title("🐧 Penguins Dashboard")
+# Page title
+st.title("🐧 Penguins Dataset Visualization Dashboard")
+st.markdown("Explore and visualize the Palmer Penguins dataset interactively.")
 
-# Dataset preview
-st.subheader("📄 Filtered Dataset")
-st.dataframe(filtered_df)
+# Create tabs
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "📄 Dataset", "📊 Summary", "📌 Histogram", 
+    "📈 Scatter Plot", "🎯 Boxplot", "🧠 Heatmap"
+])
 
-# Summary statistics
-st.subheader("📊 Summary Statistics")
-st.write(filtered_df.describe())
+# Tab 1: Dataset
+with tab1:
+    st.subheader("Filtered Dataset")
+    st.dataframe(filtered_df)
 
-# Histogram with dynamic variable selection
-st.subheader("📌 Histogram")
-numeric_cols = ["bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g"]
-selected_feature = st.selectbox("Select a variable", numeric_cols)
-fig1, ax1 = plt.subplots()
-sns.histplot(filtered_df[selected_feature], kde=True, ax=ax1, color='skyblue')
-ax1.set_title(f"Distribution of {selected_feature}")
-st.pyplot(fig1)
+# Tab 2: Summary stats
+with tab2:
+    st.subheader("Descriptive Statistics")
+    st.write(filtered_df.describe())
 
-# Scatterplot: Flipper Length vs. Body Mass
-st.subheader("📈 Flipper Length vs Body Mass")
-fig2, ax2 = plt.subplots()
-sns.scatterplot(data=filtered_df, x="flipper_length_mm", y="body_mass_g", hue="species", ax=ax2)
-st.pyplot(fig2)
+# Tab 3: Histogram
+with tab3:
+    st.subheader("Distribution Plot")
+    numeric_cols = ["bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g"]
+    selected = st.selectbox("Select a numeric variable:", numeric_cols)
+    fig, ax = plt.subplots()
+    sns.histplot(filtered_df[selected], kde=True, ax=ax, color="skyblue")
+    ax.set_title(f"Distribution of {selected}")
+    st.pyplot(fig)
 
-# Boxplot: Body Mass by Sex
-st.subheader("🎯 Body Mass by Sex")
-fig3, ax3 = plt.subplots()
-sns.boxplot(data=filtered_df, x="sex", y="body_mass_g", hue="sex", palette="Set2", ax=ax3, legend=False)
-st.pyplot(fig3)
+# Tab 4: Scatter Plot
+with tab4:
+    st.subheader("Flipper Length vs Body Mass")
+    fig2, ax2 = plt.subplots()
+    sns.scatterplot(data=filtered_df, x="flipper_length_mm", y="body_mass_g", hue="species", ax=ax2)
+    st.pyplot(fig2)
 
-# Correlation heatmap
-st.subheader("🧠 Correlation Heatmap")
-fig4, ax4 = plt.subplots()
-sns.heatmap(filtered_df[numeric_cols].corr(), annot=True, cmap="coolwarm", ax=ax4)
-st.pyplot(fig4)
+# Tab 5: Boxplot
+with tab5:
+    st.subheader("Body Mass by Sex")
+    fig3, ax3 = plt.subplots()
+    sns.boxplot(data=filtered_df, x="sex", y="body_mass_g", palette="Set2", ax=ax3)
+    st.pyplot(fig3)
 
-# Download filtered data
-st.subheader("⬇️ Download Filtered Data")
-csv = filtered_df.to_csv(index=False)
-st.download_button("Download CSV", data=csv, file_name="filtered_penguins.csv", mime="text/csv")
+# Tab 6: Correlation Heatmap
+with tab6:
+    st.subheader("Correlation Heatmap")
+    fig4, ax4 = plt.subplots()
+    sns.heatmap(filtered_df[numeric_cols].corr(), annot=True, cmap="coolwarm", ax=ax4)
+    st.pyplot(fig4)
 
 # Key insights
 st.markdown("### 📌 Key Insights")
 st.markdown("""
-- **Gentoo penguins** show higher body mass and longer flippers.
-- **Males** typically weigh more than **females**, regardless of species.
-- There's a clear **positive correlation** between body mass and flipper length.
-- Bill dimensions vary distinctly by species — aiding in classification.
+- **Gentoo penguins** are the largest in size and flipper length.
+- **Males** weigh more than **females** across species.
+- **Body mass** and **flipper length** are strongly correlated.
+- Bill length and depth differ by species and help in classification.
 """)
