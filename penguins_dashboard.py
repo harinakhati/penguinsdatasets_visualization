@@ -53,7 +53,7 @@ st.pyplot(fig2)
 # Boxplot: Body Mass by Sex
 st.subheader("🎯 Body Mass by Sex")
 fig3, ax3 = plt.subplots()
-sns.boxplot(data=filtered_df, x="sex", y="body_mass_g", palette="Set2", ax=ax3)
+sns.boxplot(data=filtered_df, x="sex", y="body_mass_g", hue="sex", palette="Set2", ax=ax3, legend=False)
 st.pyplot(fig3)
 
 # Correlation heatmap
