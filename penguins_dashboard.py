@@ -58,7 +58,7 @@ with tab3:
 with tab4:
     st.subheader("Flipper Length vs Body Mass")
     fig2, ax2 = plt.subplots()
- sns.boxplot(data=filtered_df, x="sex", y="body_mass_g", hue="sex", palette="Set2", ax=ax3, legend=False)
+    sns.boxplot(data=filtered_df, x="sex", y="body_mass_g", hue="sex", palette="Set2", ax=ax2, legend=False)
     st.pyplot(fig2)
 
 # Tab 5: Boxplot
